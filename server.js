@@ -105,13 +105,16 @@ app.use((err, req, res, next) => {
  */
 
 const server = app.listen(port, () => {
+  const url = `http://localhost:${port}`;
+  const urlPadding = 51 - url.length;
+  
   console.log(`
 ╔════════════════════════════════════════════════════════╗
 ║  Server is running!                                    ║
 ║  ------------------------------------------------      ║
 ║  Environment: ${environment.padEnd(36)} ║
 ║  Port: ${String(port).padEnd(45)} ║
-║  URL: http://localhost:${port}${' '.repeat(28)} ║
+║  URL: ${url}${' '.repeat(urlPadding)} ║
 ║  ------------------------------------------------      ║
 ║  Press Ctrl+C to stop the server                       ║
 ╚════════════════════════════════════════════════════════╝
