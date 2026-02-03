@@ -1,22 +1,30 @@
 # Bare Express Website Template
 
-A minimal and clean website template built with Express.js, perfect for quickly starting a new web project. This template provides a basic structure with static file serving, HTML, CSS, and JavaScript ready to go.
+A minimal and clean website template built with Express.js, perfect for quickly starting a new web project. This template provides a solid foundation with essential security features, error handling, logging, and best practices baked in.
 
-## Features
+## ✨ Features
 
-- 🚀 Simple Express.js server setup
+- 🚀 Simple Express.js server setup with modern best practices
+- 🔒 Built-in security with Helmet.js
 - 📁 Organized project structure (HTML, CSS, JavaScript)
 - 🎨 Pre-configured static file serving
 - 💡 Clean and minimal starting point
 - ⚡ Easy to customize and extend
+- 🛡️ Comprehensive error handling (404 and global error handlers)
+- 📝 Request logging with Morgan
+- 🗜️ Response compression for better performance
+- 🔧 Environment variable configuration
+- 🌐 CORS enabled
+- 💚 Health check endpoint
+- 🔄 Graceful shutdown handling
 
-## Prerequisites
+## 📋 Prerequisites
 
 Before you begin, ensure you have the following installed:
-- [Node.js](https://nodejs.org/en) (version 12.x or higher recommended)
+- [Node.js](https://nodejs.org/en) (version 14.x or higher)
 - npm (comes with Node.js)
 
-## Installation
+## 🚀 Quick Start
 
 1. **Clone the repository**
    ```bash
@@ -24,26 +32,37 @@ Before you begin, ensure you have the following installed:
    cd Bare-Express-Website-Template
    ```
 
-2. **Initialize npm and install dependencies**
+2. **Install dependencies**
    ```bash
-   npm init -y
-   npm install express
+   npm install
    ```
 
-3. **Start the server**
+3. **Set up environment variables**
    ```bash
-   node server.js
+   cp .env.example .env
+   ```
+   Edit `.env` to customize your configuration (optional - defaults work out of the box)
+
+4. **Start the server**
+   
+   For development (with auto-reload):
+   ```bash
+   npm run dev
+   ```
+   
+   For production:
+   ```bash
+   npm start
    ```
 
-4. **View your website**
+5. **View your website**
    
    Open your browser and navigate to:
    - `http://localhost:3000` 
-   - or `http://127.0.0.1:3000`
-
+   
    You should see the welcome page with a functional button!
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 Bare-Express-Website-Template/
@@ -54,22 +73,56 @@ Bare-Express-Website-Template/
 │   │   └── script.js    # Client-side JavaScript
 │   └── index.html       # Main HTML file
 ├── server.js            # Express server configuration
+├── package.json         # Project dependencies and scripts
+├── .env.example         # Environment variables template
+├── .gitignore          # Git ignore rules
 ├── LICENSE              # License file
 └── README.md            # This file
 ```
 
-## Usage
+## ⚙️ Configuration
 
-### Starting the Server
+### Environment Variables
+
+Create a `.env` file in the root directory (use `.env.example` as a template):
+
+```env
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+```
+
+**Available Variables:**
+- `PORT` - The port number for the server (default: 3000)
+- `NODE_ENV` - Environment mode: `development` or `production` (default: development)
+
+### Scripts
+
+The following npm scripts are available:
 
 ```bash
-node server.js
+npm start       # Start the server in production mode
+npm run dev     # Start the server with nodemon for development
+npm test        # Run tests (placeholder - add your tests)
 ```
 
-The server will start on port 3000 by default. You'll see the message:
-```
-Server running at http://localhost:3000
-```
+## 🔌 Built-in Endpoints
+
+### Home Page
+- **GET** `/` - Serves the main HTML page
+
+### Health Check
+- **GET** `/health` - Returns server health status and uptime
+  ```json
+  {
+    "status": "healthy",
+    "timestamp": "2024-01-01T00:00:00.000Z",
+    "uptime": 123.456,
+    "environment": "development"
+  }
+  ```
+
+## 🛠️ Usage
 
 ### Customizing Your Website
 
@@ -87,32 +140,148 @@ To add additional pages to your website:
 
 Express automatically serves static files from the `public` directory!
 
-### Changing the Port
+### Adding API Routes
 
-To run the server on a different port, modify the `port` variable in `server.js`:
+Add new routes in `server.js` before the error handling middleware:
 
 ```javascript
-const port = 3000; // Change this to your desired port
+// Example API endpoint
+app.get('/api/data', (req, res) => {
+  res.json({ message: 'Hello from API!' });
+});
+
+app.post('/api/submit', (req, res) => {
+  const data = req.body;
+  // Process the data
+  res.json({ success: true, data });
+});
 ```
 
-## Development Tips
+## 🔒 Security Features
 
-- Use `nodemon` for automatic server restart during development:
-  ```bash
-  npm install -g nodemon
-  nodemon server.js
-  ```
-- Add a `.gitignore` file to exclude `node_modules` from version control
-- Consider adding a `package.json` with proper scripts and dependencies
+This template includes several security best practices:
 
-## License
+- **Helmet.js** - Sets various HTTP headers for security
+- **Content Security Policy** - Prevents XSS attacks
+- **CORS** - Configurable cross-origin resource sharing
+- **Input Validation** - Ready for body parsing with Express
+- **Error Handling** - Prevents information leakage in production
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📊 Logging
 
-## Contributing
+The template uses Morgan for HTTP request logging:
+- **Development mode**: Detailed colored output
+- **Production mode**: Apache combined log format
 
-Contributions are welcome! Feel free to submit issues or pull requests to improve this template.
+## 🚦 Error Handling
 
-## Acknowledgments
+### 404 Errors
+Unmatched routes return a JSON response:
+```json
+{
+  "error": "Not Found",
+  "message": "Cannot GET /unknown-route",
+  "path": "/unknown-route"
+}
+```
 
-Built with [Express.js](https://expressjs.com/) - Fast, unopinionated, minimalist web framework for Node.js 
+### 500 Errors
+Server errors are caught and handled gracefully:
+- Development: Full error details with stack trace
+- Production: Generic error message (prevents information leakage)
+
+## 🔄 Graceful Shutdown
+
+The server handles shutdown signals properly:
+- Closes all connections gracefully
+- Waits for ongoing requests to complete
+- Force shutdown after 10 seconds if needed
+
+## 🧪 Testing
+
+To add tests, install a testing framework like Jest or Mocha:
+
+```bash
+npm install --save-dev jest
+```
+
+Then update the test script in `package.json` and create your test files.
+
+## 🚀 Deployment
+
+### Heroku
+
+```bash
+heroku create your-app-name
+git push heroku main
+```
+
+### Vercel
+
+```bash
+npm install -g vercel
+vercel
+```
+
+### Docker
+
+Create a `Dockerfile`:
+```dockerfile
+FROM node:14
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --production
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+Build and run:
+```bash
+docker build -t bare-express-app .
+docker run -p 3000:3000 bare-express-app
+```
+
+## 📦 Dependencies
+
+### Production
+- **express** - Fast, unopinionated web framework
+- **helmet** - Security middleware
+- **morgan** - HTTP request logger
+- **cors** - CORS middleware
+- **compression** - Response compression
+- **dotenv** - Environment variable management
+
+### Development
+- **nodemon** - Auto-restart server on file changes
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+Built with [Express.js](https://expressjs.com/) - Fast, unopinionated, minimalist web framework for Node.js
+
+## 📚 Additional Resources
+
+- [Express.js Documentation](https://expressjs.com/)
+- [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
+- [Helmet.js Documentation](https://helmetjs.github.io/)
+
+## 💬 Support
+
+If you have any questions or run into issues, please open an issue on GitHub.
+
+---
+
+Made with ❤️ using Express.js
